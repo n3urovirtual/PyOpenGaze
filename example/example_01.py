@@ -62,7 +62,7 @@ tracker.enable_send_data(True)
 tracker.user_data("START=%d" % (round(time.time()*1000)))
 
 # Wait for 1 sample's duration, then reset the user-defined variable.
-time.sleep(0.017)
+time.sleep(0.07)
 tracker.user_data("0")
 
 # Collect data for five seconds.
