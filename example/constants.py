@@ -1,4 +1,4 @@
 DISPTYPE = 'psychopy'
-DISPSIZE = (1920, 1200)
+DISPSIZE = (1920, 1080)
 TRACKERTYPE = 'opengaze'
 SCREENNR = 2
