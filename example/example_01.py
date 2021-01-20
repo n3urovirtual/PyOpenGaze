@@ -1,7 +1,7 @@
 import os
 import time
 
-from opengaze import OpenGazeConnection
+from opengaze import OpenGazeTracker
 
 # # # # #
 # INITIALISE
@@ -11,7 +11,7 @@ dirname = os.path.dirname(os.path.abspath(__file__))
 fname = os.path.join(dirname, '%s.tsv' % (time.strftime("%Y-%m-%d_%H-%M-%S")))
 
 # Open the connection to the tracker.
-tracker = OpenGazeConnection(logfile=fname, debug=False)
+tracker = OpenGazeTracker(logfile=fname, debug=False)
 time.sleep(1.0)
 
 # Enable the tracker to send ALL the things.
