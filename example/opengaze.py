@@ -10,23 +10,17 @@ from threading import Event, Lock, Thread
 
 SCREEN_WIDTH=1920
 SCREEN_HEIGHT=1080
-# TODO: OpenGazeConnection
-# Thread that monitors whether the other threads are still alive, and that
-#     checks whether the connection is still alive.
-# Locks for the log and the DEBUG log.
 
-
-# # # # #
 # OPENGAZE API WRAPPER
 
-# The OpenGazeTracker class communicates to the GazePoint Server through
+# The GazePointTracker class communicates to the GazePoint Server through
 # a TCP/IP socket.
-class OpenGazeTracker:
+class GazePointTracker:
 
     def __init__(self, ip='127.0.0.1', port=4242, logfile='default.tsv', \
         debug=False):
 
-        """The OpenGazeConnection class communicates to the GazePoint
+        """The GazePointTracker class communicates to the GazePoint
         server through a TCP/IP socket. Incoming samples will be written
         to a log at the specified path.
 
@@ -118,7 +112,7 @@ class OpenGazeTracker:
         # Start a Thread that writes queued samples to the log file.
         self._logthread = Thread( \
             target=self._process_logging,
-            name='PyGaze_OpenGazeConnection_logging', \
+            name='GazePointConnection_logging', \
             args=[])
 
         # INCOMING
@@ -136,7 +130,7 @@ class OpenGazeTracker:
         # Start a new Thread that processes the incoming messages.
         self._inthread = Thread( \
             target=self._process_incoming, \
-            name='PyGaze_OpenGazeConnection_incoming', \
+            name='GazePointConnection_incoming', \
             args=[])
 
         # OUTGOING
@@ -149,7 +143,7 @@ class OpenGazeTracker:
         # Create a new Thread that processes the outgoing queue.
         self._outthread = Thread( \
             target=self._process_outgoing, \
-            name='PyGaze_OpenGazeConnection_outgoing', \
+            name='GazePointConnection_outgoing', \
             args=[])
         # Create a dict that will keep track of at what time which command
         # was sent.
@@ -228,6 +222,7 @@ class OpenGazeTracker:
         else:
             x = float(self._incoming['REC']['NO_ID']['BPOGX'])
             y = float(self._incoming['REC']['NO_ID']['BPOGY'])
+            #Change GP3 HD coordinates to Psychopy display coordinates
             gaze_x=(x-0.5)*SCREEN_WIDTH
             gaze_y=-1*(y-0.5)*SCREEN_HEIGHT
         self._inlock.release()
