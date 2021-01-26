@@ -1,4 +1,0 @@
-DISPTYPE = 'psychopy'
-DISPSIZE = (1920, 1080)
-TRACKERTYPE = 'opengaze'
-SCREENNR = 2
