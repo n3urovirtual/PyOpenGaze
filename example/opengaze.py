@@ -198,7 +198,7 @@ class GazePointTracker:
         # Wait for the calibration result.
         result = None
         while result == None:
-            result = self.get_calibration_result()
+            result = self.calibrate_result_summary()
             time.sleep(0.1)
         # Hide the calibration window.
         self.calibrate_show(False)
