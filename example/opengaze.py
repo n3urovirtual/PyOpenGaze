@@ -86,8 +86,10 @@ class GazePointTracker:
             'BPOGX', 'BPOGY', 'BPOGV', \
             'LPCX', 'LPCY', 'LPD', 'LPS', 'LPV', \
             'RPCX', 'RPCY', 'RPD', 'RPS', 'RPV', \
-            'LEYEX', 'LEYEY', 'LEYEZ', 'LPUPILD', 'LPUPILV', \
-            'REYEX', 'REYEY', 'REYEZ', 'RPUPILD', 'RPUPILV', \
+            'LEYEX', 'LEYEY', 'LEYEZ', 'LPUPILV', \
+            'REYEX', 'REYEY', 'REYEZ', 'RPUPILV', \
+            'LPMM','LPMMV','RPMM','RPMMV',\
+            'BKID','BKDUR','BKPMIN',\
             'CX', 'CY', 'CS', \
             'USER']
         self._n_logvars = len(self._logheader)
@@ -177,6 +179,8 @@ class GazePointTracker:
         self.enable_send_pog_right(True)
         self.enable_send_pupil_left(True)
         self.enable_send_pupil_right(True)
+        self.enable_send_pupil_diameter(True)
+        self.enable_send_blink(True)
         self.enable_send_time(True)
         self.enable_send_time_tick(True)
         self.enable_send_user_data(True)
@@ -806,7 +810,6 @@ class GazePointTracker:
                respect to the camera focal point, in meters.
         LEYEZ:   The depth coordinate of the left eye in 3D space with
                respect to the camera focal point, in meters.
-        LPUPILD: The diameter of the left eye pupil in meters.
         LPUPILV: The valid flag with a value of 1 if the data is valid, and
                0 if it is not.
         """
@@ -831,7 +834,6 @@ class GazePointTracker:
                respect to the camera focal point, in meters.
         REYEZ:   The depth coordinate of the right eye in 3D space with
                respect to the camera focal point, in meters.
-        RPUPILD: The diameter of the right eye pupil in meters.
         RPUPILV: The valid flag with a value of 1 if the data is valid, and
                0 if it is not.
         """
@@ -861,6 +863,49 @@ class GazePointTracker:
         # Send the message (returns after the Server acknowledges receipt).
         acknowledged, timeout = self._send_message('SET', \
             'ENABLE_SEND_CURSOR', \
+            values=[('STATE', int(state))], \
+            wait_for_acknowledgement=True)
+
+        # Return a success Boolean.
+        return acknowledged and (timeout==False)
+
+    def enable_send_pupil_diameter(self, state):
+
+        """Enable (state=True) or disable (state=False) the inclusion of
+        data on the left and right eye pupil diameter in millimeters. This data
+        consists of the following:
+        LPMM:   The diameter of left eye pupil in millimeters.
+        LPMMV:   The valid flag with value of 1 if the data is valid, and 0 if
+                 it is not.
+        RPMM:   The diameter of right eye pupil in millimeters.
+        RPMMV:   The valid flag with value of 1 if the data is valid, and 0 if
+                 it is not.
+        """
+
+        # Send the message (returns after the Server acknowledges receipt).
+        acknowledged, timeout = self._send_message('SET', \
+            'ENABLE_SEND_PUPILMM', \
+            values=[('STATE', int(state))], \
+            wait_for_acknowledgement=True)
+
+        # Return a success Boolean.
+        return acknowledged and (timeout==False)
+
+    def enable_send_blink(self, state):
+
+        """Enable (state=True) or disable (state=False) the inclusion of
+        data on the user's blink rate (blinks/minute), blink duration and blinks
+        ID. This data consists of the following:
+        BKID:   Each blink is assigned an ID value and incremented by one. The
+                BKID value equals 0 for every correct record where no blink has
+                been detected.
+        BKDUR:  The duration of the preceding blink in seconds.
+        BKMIN:   The number of blinks in the previous 60 second period of time.
+        """
+
+        # Send the message (returns after the Server acknowledges receipt).
+        acknowledged, timeout = self._send_message('SET', \
+            'ENABLE_SEND_BLINK', \
             values=[('STATE', int(state))], \
             wait_for_acknowledgement=True)
 
